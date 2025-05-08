@@ -1,0 +1,21 @@
+{
+  "workbench.colorCustomizations": {
+    "activityBar.activeBorder": "#b4ffff",
+    "activityBar.border": "#E7E6E3",
+    "activityBar.background": "#705446",
+    "activityBar.foreground": "#E1C391",
+    "activityBar.inactiveForeground": "#b9b9b9",
+    "activityBar.activeBackground": "#3C3431",
+    "titleBar.activeBackground": "#705446",
+    "titleBar.activeForeground": "#E1C391",
+    "titleBar.inactiveBackground": "#5b5b5b",
+    "titleBar.inactiveForeground": "#b9b9b9",
+    "titleBar.border": "#3C3431",
+    "statusBar.background": "#705446",
+    "statusBar.foreground": "#E1C391",
+    "statusBar.border": "#3C3431"
+  },
+  "cSpell.words": [
+    "krokodili"
+  ]
+}
