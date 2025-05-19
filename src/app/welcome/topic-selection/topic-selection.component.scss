@@ -1,0 +1,9 @@
+
+img {
+	opacity:0;
+	aspect-ratio: 2 / 1;
+}
+
+ion-card.selected {
+	outline: 3px solid var(--extracted-color);
+}

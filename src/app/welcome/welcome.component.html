@@ -1,0 +1,48 @@
+<ion-header class="ion-no-border">
+	<ion-toolbar>
+		<ion-buttons slot="end">
+			<ion-button color="dark" (click)="toggleChange()">
+				<ion-icon
+					slot="icon-only"
+					[ios]="paletteToggle ? 'moon-outline' : 'sunny-outline'"
+					[md]="paletteToggle ? 'moon-outline' : 'sunny-outline'"
+				></ion-icon>
+			</ion-button>
+		</ion-buttons>
+	</ion-toolbar>
+</ion-header>
+
+<ion-content class="welcome-content">
+	<div class="welcome-container">
+		<div class="logo-container">
+			<img src="assets/logo.png" alt="Krokodili Logo" class="app-logo" />
+			<h1 class="app-title">Krokodili {{ currentScreen }}</h1>
+		</div>
+		<div>
+			@switch (currentScreen) { @case ('lang-selection') {
+			<app-lang-selection
+				(languageSelected)="onLanguageSelected($event)"
+				[languages]="languages"
+			></app-lang-selection>
+			} @case ('level-selection') {
+			<app-level-selection
+				(levelSelected)="onLevelSelected($event)"
+				[levels]="levels"
+			></app-level-selection>
+			} @case ('topic-selection') {
+			<app-topic-selection
+				(topicSelected)="onTopicSelected($event)"
+				[topics]="topics"
+			></app-topic-selection>
+			} @case ('login-section') {
+			<app-login-section
+				(userPromise)="onWelcomeFinishing($event)"
+			></app-login-section>
+			} }
+		</div>
+	</div>
+</ion-content>
+<ion-loading
+	message="Subscribing to your topic..."
+	[isOpen]="loadingOnWelcomeFinishing"
+></ion-loading>

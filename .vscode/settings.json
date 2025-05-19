@@ -1,21 +1,19 @@
 {
-  "workbench.colorCustomizations": {
-    "activityBar.activeBorder": "#b4ffff",
-    "activityBar.border": "#E7E6E3",
-    "activityBar.background": "#705446",
-    "activityBar.foreground": "#E1C391",
-    "activityBar.inactiveForeground": "#b9b9b9",
-    "activityBar.activeBackground": "#3C3431",
-    "titleBar.activeBackground": "#705446",
-    "titleBar.activeForeground": "#E1C391",
-    "titleBar.inactiveBackground": "#5b5b5b",
-    "titleBar.inactiveForeground": "#b9b9b9",
-    "titleBar.border": "#3C3431",
-    "statusBar.background": "#705446",
-    "statusBar.foreground": "#E1C391",
-    "statusBar.border": "#3C3431"
-  },
-  "cSpell.words": [
-    "krokodili"
-  ]
+	"workbench.colorCustomizations": {
+		"activityBar.activeBorder": "#b4ffff",
+		"activityBar.border": "#E7E6E3",
+		"activityBar.background": "#490E08",
+		"activityBar.foreground": "#F1A17E",
+		"activityBar.inactiveForeground": "#c6b2a9",
+		"activityBar.activeBackground": "#F7DC6F",
+		"titleBar.activeBackground": "#490E08",
+		"titleBar.activeForeground": "#F1A17E",
+		"titleBar.inactiveBackground": "#3f1612",
+		"titleBar.inactiveForeground": "#c6b2a9",
+		"titleBar.border": "#F7DC6F",
+		"statusBar.background": "#490E08",
+		"statusBar.foreground": "#F1A17E",
+		"statusBar.border": "#F7DC6F"
+	},
+	"cSpell.words": ["krokodili"]
 }

@@ -1,0 +1,45 @@
+<ion-grid class="x-large-buttons centered-content">
+	<ion-row>
+		<ion-col size="12" class="title-col">
+			<h1 class="selection-title">What is your target?</h1>
+		</ion-col>
+	</ion-row>
+	@if (!levels()) {
+	<ion-row class="loading-row">
+		<ion-col size="12" class="loading-col">
+			<div class="loading-indicator">Loading levels...</div>
+		</ion-col>
+	</ion-row>
+	} @if (levels()) { @for (level of levels(); track $index) {
+	<ion-row class="language-row">
+		<ion-col size="12">
+			<ion-button
+				expand="block"
+				shape="round"
+				[fill]="
+					selectedLevel?.name === level.name ? 'outline' : 'clear'
+				"
+				size="large"
+				(click)="selectLevel(level)"
+				><div>
+					{{ level.emoji }} {{ level.name }}
+					<p>{{ level.description }}</p>
+				</div>
+			</ion-button>
+		</ion-col>
+	</ion-row>
+	}
+	<ion-row>
+		<ion-col size="12" class="language-col">
+			<ion-button
+				expand="block"
+				shape="round"
+				size="large"
+				(click)="continue()"
+				[disabled]="!selectedLevel"
+				>Continue</ion-button
+			>
+		</ion-col>
+	</ion-row>
+	}
+</ion-grid>
