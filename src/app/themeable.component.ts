@@ -17,7 +17,6 @@ export class ThemeableComponent implements OnInit {
 		await this.storageService.initialized;
 		this.storageValue = (await this.storageService.get('dark')) as boolean;
 
-		console.log(this.storageValue);
 		if (this.storageValue === null) {
 			// Use matchMedia to check the user preference
 			const prefersDark = window.matchMedia(

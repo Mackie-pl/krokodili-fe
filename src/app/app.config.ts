@@ -26,7 +26,6 @@ function initializeParse() {
 		);
 		Parse.serverURL = 'https://parseapi.back4app.com';
 		Image.Initialize();
-		console.log('Parse has been initialized');
 	};
 }
 

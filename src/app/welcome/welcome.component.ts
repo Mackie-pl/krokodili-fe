@@ -22,6 +22,7 @@ import { LoginSectionComponent } from './login-section/login-section.component';
 import { User } from '../models/user.model';
 import { Subscription } from '../models/subscription.model';
 import Parse from 'parse';
+
 @Component({
 	selector: 'welcome',
 	templateUrl: 'welcome.component.html',
@@ -86,9 +87,7 @@ export class WelcomeComponent extends ThemeableComponent implements OnInit {
 
 	async onWelcomeFinishing(userPromise?: Promise<User>) {
 		this.loadingOnWelcomeFinishing = true;
-		console.log('WelcomeComponent.onWelcomeFinishing');
 		if (userPromise) await userPromise;
-		console.log('WelcomeComponent.onWelcomeFinishing 2');
 
 		let error: any;
 		try {

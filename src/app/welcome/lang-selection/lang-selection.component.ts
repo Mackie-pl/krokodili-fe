@@ -8,10 +8,8 @@ import {
 	IonRow,
 	IonCol,
 	IonGrid,
-	IonIcon,
 	IonButton,
 } from '@ionic/angular/standalone';
-import { Router } from '@angular/router';
 
 @Component({
 	selector: 'app-lang-selection',
@@ -35,7 +33,7 @@ export class LangSelectionComponent
 	loading = true;
 	selectedLanguage: Language | null = null;
 
-	constructor(storageService: StorageService, private router: Router) {
+	constructor(storageService: StorageService) {
 		super(storageService);
 	}
 

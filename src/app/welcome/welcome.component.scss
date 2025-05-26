@@ -1,26 +1,17 @@
 :root {
     interpolate-size: allow-keywords; /* 👈 */
 }
-ion-toolbar {
-	// --background: var(--ion-color-light);
-}
 
 ion-button {
 	opacity: 0.5;
 }
 
 .welcome-content {
-	// --background: var(--ion-color-light);
 	--padding-top: 24px;
 	--padding-bottom: 24px;
 }
 
-
 .welcome-container {
-	// display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
 	padding: 16px;
 	min-height: 90vh;
 }
@@ -29,12 +20,6 @@ ion-button {
 	text-align: center;
 	margin-bottom: 40px;
 }
-
-// .logo-container + * > * {
-// 	transition: height 0.35s ease;
-// 	height: calc-size(auto, size); /* 👈 */
-
-// }
 
 .app-logo {
 	width: 120px;
