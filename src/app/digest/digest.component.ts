@@ -26,6 +26,7 @@ import { MarkedOptions } from 'ngx-markdown';
 })
 export class DigestComponent {
 	digest = signal<Digest | null>(null);
+	content = signal<string>('');
 	constructor(private route: ActivatedRoute) {}
 
 	ngOnInit() {
@@ -38,21 +39,17 @@ export class DigestComponent {
 	async loadDigest(digestId: string) {
 		const digest = await Digest.Get(digestId);
 		this.digest.set(digest);
-		// const renderer = new MarkedRenderer();
-		// const originalText = renderer.text.bind(renderer);
 
-		// renderer.text = (text: any) => {
-		// 	const words = text.split(/(\s+)/);
-		// 	return words
-		// 		.map((word: string) => {
-		// 			if (word.trim() === '') {
-		// 				return word;
-		// 			}
-		// 			return `<span class="word">${word}</span>`;
-		// 		})
-		// 		.join('');
-		// };
-		// this.markedOptions.renderer = renderer;
+		//replace [1] with markdown link from digest citations
+		const content = digest.content.replace(
+			/\[(\d+)\]/g,
+			(match, number) => {
+				const citation = digest.citations[number - 1];
+				return `[${JSON.stringify(citation)}](${citation.url})`;
+			}
+		);
+
+		this.content.set(content);
 	}
 
 	onReady() {

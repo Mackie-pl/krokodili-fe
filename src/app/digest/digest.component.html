@@ -10,6 +10,6 @@
 		[style.background-image]="'url(' + digest()?.imageUrl + ')'"
 	></div>
 	<ion-grid [fixed]="true">
-		<markdown [data]="digest()?.content" (ready)="onReady()"> </markdown>
+		<markdown [data]="content()" (ready)="onReady()"> </markdown>
 	</ion-grid>
 </ion-content>
