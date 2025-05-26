@@ -1,0 +1,10 @@
+@for (digest of digests; track $index) {
+<ion-row>
+	<ion-col size="12" size-sm="12" size-md="12" size-lg="6" size-xl="6">
+		<digest-card
+			[digest]="digest"
+			[routerLink]="['/digest', digest.id]"
+		></digest-card>
+	</ion-col>
+</ion-row>
+}

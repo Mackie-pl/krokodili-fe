@@ -46,3 +46,10 @@
 	message="Subscribing to your topic..."
 	[isOpen]="loadingOnWelcomeFinishing"
 ></ion-loading>
+<ion-alert
+	[isOpen]="errorAlert"
+	header="There's a problem"
+	[message]="errorAlert"
+	[buttons]="alertButtons"
+	(didDismiss)="onAlertDismiss()"
+></ion-alert>

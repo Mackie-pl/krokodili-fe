@@ -5,7 +5,11 @@
 </ion-header>
 
 <ion-content class="ion-padding">
+	<div
+		class="hero"
+		[style.background-image]="'url(' + digest()?.imageUrl + ')'"
+	></div>
 	<ion-grid [fixed]="true">
-		<digests-list></digests-list>
+		<markdown [data]="digest()?.content" (ready)="onReady()"> </markdown>
 	</ion-grid>
 </ion-content>

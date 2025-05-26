@@ -1,9 +1,9 @@
 import { Component, OnInit, output, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Language } from '../../models/language.model';
-import { ThemeableComponent } from '../../themeable.component';
-import { StorageService } from '../../storage.service';
-import { SanitizeHtmlPipe } from '../../shared/pipes/sanitize-html.pipe';
+import { Language } from '@app/models/language.model';
+import { ThemeableComponent } from '@app/themeable.component';
+import { StorageService } from '@app/storage.service';
+import { SanitizeHtmlPipe } from '@app/shared/pipes/sanitize-html.pipe';
 import {
 	IonRow,
 	IonCol,
@@ -23,7 +23,6 @@ import { Router } from '@angular/router';
 		IonRow,
 		IonCol,
 		IonGrid,
-		IonIcon,
 		SanitizeHtmlPipe,
 	],
 })

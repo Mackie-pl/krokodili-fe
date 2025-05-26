@@ -11,6 +11,7 @@ import {
 	IonIcon,
 	IonContent,
 	IonLoading,
+	IonAlert,
 } from '@ionic/angular/standalone';
 import { StorageService } from '../storage.service';
 import { LangSelectionComponent } from './lang-selection/lang-selection.component';
@@ -20,11 +21,13 @@ import { Topic } from '../models/topic.model';
 import { LoginSectionComponent } from './login-section/login-section.component';
 import { User } from '../models/user.model';
 import { Subscription } from '../models/subscription.model';
+import Parse from 'parse';
 @Component({
 	selector: 'welcome',
 	templateUrl: 'welcome.component.html',
 	styleUrls: ['welcome.component.scss'],
 	imports: [
+		IonAlert,
 		IonLoading,
 		IonIcon,
 		IonButtons,
@@ -41,6 +44,9 @@ import { Subscription } from '../models/subscription.model';
 })
 export class WelcomeComponent extends ThemeableComponent implements OnInit {
 	currentScreen = 'lang-selection';
+	errorAlert: string | null = null;
+	alertButtons = ['OK'];
+
 	languages: Language[] | null = null;
 	levels: Level[] | null = null;
 	topics: Topic[] | null = null;
@@ -84,12 +90,30 @@ export class WelcomeComponent extends ThemeableComponent implements OnInit {
 		if (userPromise) await userPromise;
 		console.log('WelcomeComponent.onWelcomeFinishing 2');
 
-		await Subscription.SubscribeGeneric(
-			this.selectedLanguage!,
-			this.selectedLevel!,
-			this.selectedTopic!
-		);
+		let error: any;
+		try {
+			await Subscription.SubscribeGeneric(
+				this.selectedLanguage!,
+				this.selectedLevel!,
+				this.selectedTopic!
+			);
+		} catch (error: any) {
+			if (error.code === Parse.Error.SCRIPT_FAILED) {
+				if (error.error.code === 601) {
+					this.loadingOnWelcomeFinishing = false;
+					this.errorAlert = 'You have too many subscriptions.';
+				}
+			}
+			console.error('Error subscribing:', error.code);
+			error = error;
+		}
 		this.loadingOnWelcomeFinishing = false;
-		this.router.navigate(['/home']);
+		if (error) return;
+		this.router.navigate(['/main']);
+	}
+
+	onAlertDismiss() {
+		this.errorAlert = null;
+		this.router.navigate(['/main']);
 	}
 }

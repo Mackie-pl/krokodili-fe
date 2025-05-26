@@ -37,17 +37,14 @@ export class AppComponent implements OnInit {
 	}
 
 	async ngOnInit(): Promise<any> {
-		const loggedInUser = User.current() as User;
-		console.log(loggedInUser);
-		if (!loggedInUser) return this.router.navigate(['/welcome']);
-
-		const subscriptions = await loggedInUser.getSubscriptions();
-		console.log(subscriptions);
-		if (subscriptions.length === 0)
-			return this.router.navigate(['/welcome']);
-
-		this.router.navigate(['/home']);
-
+		// const loggedInUser = User.current() as User;
+		// console.log(loggedInUser);
+		// if (!loggedInUser) return this.router.navigate(['/welcome']);
+		// const subscriptions = await loggedInUser.getSubscriptions();
+		// console.log(subscriptions);
+		// if (subscriptions.length === 0)
+		// 	return this.router.navigate(['/welcome']);
+		// this.router.navigate(['/main']);
 		// we do the same as below, just better
 		// const user = await AnonymousUtils.logIn();
 	}

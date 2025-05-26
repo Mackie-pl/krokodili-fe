@@ -1,4 +1,6 @@
 import { Routes } from '@angular/router';
+import { NormalScreenGuard } from './shared/guards/normal-screen.guard';
+import { WelcomeScreenGuard } from './shared/guards/welcome-screen.guard';
 
 export const routes: Routes = [
 	{
@@ -7,31 +9,23 @@ export const routes: Routes = [
 			import('./welcome/welcome.component').then(
 				(m) => m.WelcomeComponent
 			),
-		// children: [
-		// 	{
-		// 		path: '',
-		// 		redirectTo: 'lang-selection',
-		// 		pathMatch: 'full',
-		// 	},
-		// 	{
-		// 		path: 'lang-selection',
-		// 		loadComponent: () =>
-		// 			import(
-		// 				'./welcome/lang-selection/lang-selection.component'
-		// 			).then((m) => m.LangSelectionComponent),
-		// 	},
-		// 	{
-		// 		path: 'level-selection',
-		// 		loadComponent: () =>
-		// 			import(
-		// 				'./welcome/level-selection/level-selection.component'
-		// 			).then((m) => m.LevelSelectionComponent),
-		// 	},
-		// ],
+		canActivate: [WelcomeScreenGuard],
 	},
 	{
 		path: 'main',
 		loadComponent: () =>
 			import('./main/main.component').then((m) => m.MainComponent),
+		canActivate: [NormalScreenGuard],
+	},
+	{
+		path: 'digest/:id',
+		loadComponent: () =>
+			import('./digest/digest.component').then((m) => m.DigestComponent),
+		canActivate: [NormalScreenGuard],
+	},
+	{
+		path: '',
+		redirectTo: 'welcome',
+		pathMatch: 'full',
 	},
 ];

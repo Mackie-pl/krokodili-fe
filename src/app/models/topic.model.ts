@@ -4,6 +4,8 @@ enum Column {
 	NAME = 'name',
 	EMOJI = 'emoji',
 	DESCRIPTION = 'description',
+	QUERY = 'query',
+	ENABLED = 'enabled',
 }
 
 export class Topic extends Parse.Object {
@@ -26,6 +28,8 @@ export class Topic extends Parse.Object {
 
 	static GetAll() {
 		const query = new Parse.Query<Topic>(Topic.CLS_NAME);
+		query.exists(Column.QUERY);
+		query.equalTo(Column.ENABLED, true);
 		return query.find();
 	}
 }
