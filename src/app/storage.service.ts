@@ -17,14 +17,10 @@ export class StorageService {
 	}
 
 	async init() {
-		// If using, define drivers here: await this.storage.defineDriver(/*...*/);
 		const storage = await this.storage.create();
 		this._storage = storage;
 		this.resolve();
 	}
-
-	// Create and expose methods that users of this service can
-	// call, for example:
 	public set(key: string, value: any) {
 		this._storage?.set(key, value);
 	}

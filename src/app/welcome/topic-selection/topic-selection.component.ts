@@ -14,6 +14,7 @@ import {
 } from '@ionic/angular/standalone';
 import { Topic } from '../../models/topic.model';
 import { EmojiToColorPipe } from '../../shared/pipes/emoji-to-color.pipe';
+
 @Component({
 	selector: 'app-topic-selection',
 	templateUrl: 'topic-selection.component.html',
