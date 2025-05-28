@@ -1,6 +1,6 @@
 import { Component, input, signal } from '@angular/core';
 import { Digest } from '../models/digest.model';
-import { MarkdownComponent, MarkedRenderer } from 'ngx-markdown';
+import { MarkdownComponent } from 'ngx-markdown';
 import { ActivatedRoute } from '@angular/router';
 import {
 	IonHeader,
@@ -9,7 +9,9 @@ import {
 	IonContent,
 	IonGrid,
 } from '@ionic/angular/standalone';
-import { MarkedOptions } from 'ngx-markdown';
+import { ActionSheetComponent } from '../shared/action-sheet/action-sheet.component';
+import { ThemeableComponent } from '../themeable.component';
+import { StorageService } from '../storage.service';
 
 @Component({
 	selector: 'digest',
@@ -21,15 +23,24 @@ import { MarkedOptions } from 'ngx-markdown';
 		IonToolbar,
 		IonHeader,
 		MarkdownComponent,
+		ActionSheetComponent,
 	],
 	styleUrls: ['digest.component.scss'],
 })
-export class DigestComponent {
+export class DigestComponent extends ThemeableComponent {
 	digest = signal<Digest | null>(null);
 	content = signal<string>('');
-	constructor(private route: ActivatedRoute) {}
+	focusedWord = signal<string>('');
+	focusedWordTimestamp = signal<number>(0);
+	// todo repolace with local storage
+	translations: { [word: string]: string[] } = {};
+	translationLoading = signal<boolean>(false);
+	constructor(storageService: StorageService, private route: ActivatedRoute) {
+		super(storageService);
+	}
 
-	ngOnInit() {
+	override async ngOnInit() {
+		await super.ngOnInit();
 		// Access route parameter
 		const digestId = this.route.snapshot.paramMap.get('id');
 		if (!digestId) return;
@@ -38,6 +49,12 @@ export class DigestComponent {
 
 	async loadDigest(digestId: string) {
 		const digest = await Digest.Get(digestId);
+		(window as any).properNounsWithinDigest = digest.vocabulary
+			.filter((word) => word.isProperNoun)
+			.reduce((acc, word) => {
+				acc.push(...word.usedForms);
+				return acc;
+			}, [] as string[]);
 		this.digest.set(digest);
 
 		//replace [1] with markdown link from digest citations
@@ -52,7 +69,27 @@ export class DigestComponent {
 		this.content.set(content);
 	}
 
+	onMDClick(event: MouseEvent) {
+		const target = event.target as HTMLElement;
+		console.log(target);
+		if (target.className === 'word') {
+			this.focusedWord.set(target.textContent || '');
+			this.focusedWordTimestamp.set(Date.now());
+			this.translateWord(target.textContent || '');
+		}
+	}
+
 	onReady() {
 		console.log('Ready');
+	}
+
+	async translateWord(word: string) {
+		if (!word) return;
+		if (this.translations[word]) return this.translations[word];
+		this.translationLoading.set(true);
+		const translations = await this.digest()?.getTranslations(word);
+		this.translations[word] = translations;
+		this.translationLoading.set(false);
+		return translations;
 	}
 }

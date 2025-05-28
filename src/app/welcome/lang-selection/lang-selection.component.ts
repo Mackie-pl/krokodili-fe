@@ -4,12 +4,7 @@ import { Language } from '@app/models/language.model';
 import { ThemeableComponent } from '@app/themeable.component';
 import { StorageService } from '@app/storage.service';
 import { SanitizeHtmlPipe } from '@app/shared/pipes/sanitize-html.pipe';
-import {
-	IonRow,
-	IonCol,
-	IonGrid,
-	IonButton,
-} from '@ionic/angular/standalone';
+import { IonRow, IonCol, IonGrid, IonButton } from '@ionic/angular/standalone';
 
 @Component({
 	selector: 'app-lang-selection',
@@ -61,9 +56,9 @@ export class LangSelectionComponent
 			Spanish:
 				'<svg preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 750 500"><rect width="750" height="500" fill="#c60b1e"/><rect width="750" height="250" fill="#ffc400" y="125"/></svg>',
 			French: '<svg preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600"><rect width="900" height="600" fill="#ED2939"/><rect width="600" height="600" fill="#fff"/><rect width="300" height="600" fill="#002395"/></svg>',
-			German: '<svg preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 3"><rect width="5" height="3" fill="#000"/><rect width="5" height="2" fill="#D00"/><rect width="5" height="1" fill="#FFCE00"/></svg>',
+			German: '<svg preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 3"><rect width="5" height="1" fill="#000"/><rect y="1" width="5" height="1" fill="#D00"/><rect y="2" width="5" height="1" fill="#FFCE00"/></svg>',
 			Italian:
-				'<svg preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2"><rect width="3" height="2" fill="#009246"/><rect width="2" height="2" x="1" fill="#fff"/><rect width="1" height="2" x="2" fill="#ce2b37"/></svg>',
+				'<svg preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2"><rect width="1" height="2" fill="#009246"/><rect width="1" height="2" x="1" fill="#fff"/><rect width="1" height="2" x="2" fill="#ce2b37"/></svg>',
 			Polish: '<svg preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 10"><rect width="16" height="10" fill="#fff"/><rect width="16" height="5" fill="#dc143c" y="5"/></svg>',
 			Portuguese:
 				'<svg preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400"><rect width="600" height="400" fill="#006600"/><rect width="240" height="400" fill="#FF0000" x="180"/><circle cx="300" cy="200" r="65" fill="#FFFF00" stroke="#000" stroke-width="1.5"/></svg>',

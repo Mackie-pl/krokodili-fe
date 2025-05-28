@@ -126,6 +126,12 @@ ion-card {
 		text-align: center;
 		font-size: 96px;
 	}
+
+	img {
+		aspect-ratio: 8 / 4;
+		object-fit: cover;
+		border-radius: 24px;
+	}
 }
 
 .button-round {
@@ -139,6 +145,13 @@ ion-card {
 
 	&:hover {
 		border-bottom-color: rgba(0, 0, 0, 0.2);
+	}
+
+	@media (prefers-color-scheme: dark) {
+		border-bottom-color: rgba(255, 255, 255, 0.2);
+		&:hover {
+			border-bottom-color: rgba(255, 255, 255, 0.4);
+		}
 	}
 }
 

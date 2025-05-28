@@ -1,9 +1,16 @@
 :root {
+	--ion-color-primary: #31a769;
+
+	.button-large {
+		--padding-top: 10px;
+		--padding-bottom: 10px;
+	}
+
 	--ion-background-color: #ffffff;
-	--ion-background-color-rgb: 255,255,255;
+	--ion-background-color-rgb: 255, 255, 255;
 
 	--ion-text-color: #000000;
-	--ion-text-color-rgb: 0,0,0;
+	--ion-text-color-rgb: 0, 0, 0;
 
 	--ion-text-color-step-50: #0d0d0d;
 	--ion-text-color-step-100: #1a1a1a;
@@ -46,51 +53,49 @@
 	--ion-background-color-step-950: #0d0d0d;
 }
 
-
 /* This sets a different item border color for the default theme on ios and md */
 :root {
 	// --ion-item-border-color: var(--ion-background-color-step-200);
-  }
-  @media (prefers-color-scheme: light) {
-  /* This sets a different background and item background for the default theme on ios */
-  :root.ios {
-	--ion-background-color: var(--ion-background-color-step-50, #f2f2f6);
-	// --ion-toolbar-background: var(--ion-background-color);
-	--ion-item-background: #fff;
-  }
+}
+@media (prefers-color-scheme: light) {
+	/* This sets a different background and item background for the default theme on ios */
+	:root.ios {
+		--ion-background-color: var(--ion-background-color-step-50, #f2f2f6);
+		// --ion-toolbar-background: var(--ion-background-color);
+		--ion-item-background: #fff;
+	}
 
-  /* This sets a different background and item background for the default theme on md */
-  :root.md {
-	--ion-background-color: #fff;
-	// --ion-toolbar-background: var(--ion-background-color);
-	--ion-item-background: #fff;
-  }
-
+	/* This sets a different background and item background for the default theme on md */
+	:root.md {
+		--ion-background-color: #fff;
+		// --ion-toolbar-background: var(--ion-background-color);
+		--ion-item-background: #fff;
+	}
 }
 
-  /* This sets a different item background when dark mode is enabled on ios and md */
-  @media (prefers-color-scheme: dark) {
+/* This sets a different item background when dark mode is enabled on ios and md */
+@media (prefers-color-scheme: dark) {
+	:root {
+		--ion-color-primary: #31a769;
+	}
 	:root.ios,
 	:root.md {
-	  --ion-item-background: #000;
-	  --ion-toolbar-background: #000;
+		--ion-item-background: #000;
+		--ion-toolbar-background: #000;
 	}
 	ion-toolbar {
-		--background:#000;
+		--background: #000;
 	}
-
-
-  }
-  :root ion-toolbar {
+}
+:root ion-toolbar {
 	--background: transparent;
 }
 
-
-ion-button[fill="outline"],ion-button[fill="clear"] {
+ion-button[fill="outline"],
+ion-button[fill="clear"] {
 	--background: var(--ion-background-color-step-50);
 }
 
 .ion-palette-dark.md {
 	--ion-toolbar-background: #000;
-
 }

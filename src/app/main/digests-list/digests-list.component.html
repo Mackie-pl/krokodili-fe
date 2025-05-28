@@ -1,10 +1,49 @@
-@for (digest of digests; track $index) {
 <ion-row>
+	@for (digest of digests; track $index) {
 	<ion-col size="12" size-sm="12" size-md="12" size-lg="6" size-xl="6">
 		<digest-card
 			[digest]="digest"
 			[routerLink]="['/digest', digest.id]"
 		></digest-card>
 	</ion-col>
+	} @empty {
+	<ion-col size="12" size-sm="12" size-md="12" size-lg="6" size-xl="6">
+		<ion-card>
+			<img
+				alt="Not found placeholder"
+				[src]="'assets/images/not_found.jpeg'"
+			/>
+			<ion-card-header>
+				<ion-card-title>No digests found</ion-card-title>
+				<ion-card-subtitle
+					>We're probably in the process of creating
+					some</ion-card-subtitle
+				>
+			</ion-card-header>
+		</ion-card>
+	</ion-col>
+
+	}
 </ion-row>
+@if (canLoadMore && !loadingFirstView) {
+<ion-row>
+	<ion-col size="12" size-sm="12" size-md="12" size-lg="12" size-xl="12">
+		<ion-button
+			class="load-more-button"
+			expand="block"
+			shape="round"
+			size="large"
+			(click)="loadOlder()"
+		>
+			Load older
+		</ion-button>
+	</ion-col>
+</ion-row>
+} @if (loadingMore) {
+<ion-spinner></ion-spinner>
 }
+<ion-alert
+	[isOpen]="isZeroResultsAlertOpen"
+	header="We're in process of writing your update!"
+	message="Come back here in a minute, it'll be worth it!"
+></ion-alert>

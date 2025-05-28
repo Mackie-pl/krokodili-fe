@@ -15,6 +15,7 @@ import { Image } from './models/image.model';
 import { provideMarkdown } from 'ngx-markdown';
 import { MARKED_OPTIONS } from 'ngx-markdown';
 import { markedOptionsFactory } from './digest/custom-renderer';
+import { Language } from './models/language.model';
 
 // Function to initialize Parse
 function initializeParse() {
@@ -26,6 +27,7 @@ function initializeParse() {
 		);
 		Parse.serverURL = 'https://parseapi.back4app.com';
 		Image.Initialize();
+		Language.Initialize();
 	};
 }
 

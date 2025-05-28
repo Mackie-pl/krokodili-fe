@@ -1,0 +1,8 @@
+@if (loading()) {
+<ion-progress-bar type="indeterminate"></ion-progress-bar>
+}
+<div class="touchable-area" (click)="onHandleClick()">
+	<div class="handle"></div>
+</div>
+
+<ng-content></ng-content>

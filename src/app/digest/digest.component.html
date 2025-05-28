@@ -1,6 +1,6 @@
 <ion-header>
 	<ion-toolbar>
-		<ion-title>Loginh</ion-title>
+		<ion-title>Krokodili</ion-title>
 	</ion-toolbar>
 </ion-header>
 
@@ -10,6 +10,19 @@
 		[style.background-image]="'url(' + digest()?.imageUrl + ')'"
 	></div>
 	<ion-grid [fixed]="true">
-		<markdown [data]="content()" (ready)="onReady()"> </markdown>
+		<markdown
+			[data]="content()"
+			(ready)="onReady()"
+			(click)="onMDClick($event)"
+		>
+		</markdown>
 	</ion-grid>
+	<action-sheet
+		[activeTimestamp]="focusedWordTimestamp()"
+		[loading]="translationLoading()"
+	>
+		<div class="translation-panel">
+			{{ focusedWord() }}: {{ translations[focusedWord()]?.join(", ") }}
+		</div>
+	</action-sheet>
 </ion-content>
