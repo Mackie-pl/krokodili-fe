@@ -49,6 +49,18 @@ export class DigestComponent extends ThemeableComponent {
 
 	async loadDigest(digestId: string) {
 		const digest = await Digest.Get(digestId);
+		(window as any).compoundNounsWithinDigest = digest.vocabulary
+			.filter((word) =>
+				word.usedForms.some((form) => form.split(' ').length > 1)
+			)
+			.reduce((acc, word) => {
+				acc.push(
+					...word.usedForms.filter(
+						(form) => form.split(' ').length > 1
+					)
+				);
+				return acc;
+			}, [] as string[]);
 		(window as any).properNounsWithinDigest = digest.vocabulary
 			.filter((word) => word.isProperNoun)
 			.reduce((acc, word) => {
@@ -56,6 +68,13 @@ export class DigestComponent extends ThemeableComponent {
 				return acc;
 			}, [] as string[]);
 		this.digest.set(digest);
+
+		digest.vocabulary.forEach((word) => {
+			if (word.definition) {
+				this.translations[word.normalizedForm] =
+					word.definition.split(', ');
+			}
+		});
 
 		//replace [1] with markdown link from digest citations
 		const content = digest.content.replace(
@@ -73,9 +92,15 @@ export class DigestComponent extends ThemeableComponent {
 		const target = event.target as HTMLElement;
 		console.log(target);
 		if (target.className === 'word') {
-			this.focusedWord.set(target.textContent || '');
+			const normalized =
+				this.digest()?.vocabulary.find((v) =>
+					v.usedForms.includes(target.textContent || '')
+				)?.normalizedForm ||
+				target.textContent ||
+				'';
+			this.focusedWord.set(normalized);
 			this.focusedWordTimestamp.set(Date.now());
-			this.translateWord(target.textContent || '');
+			this.translateWord(normalized);
 		}
 	}
 
@@ -85,6 +110,7 @@ export class DigestComponent extends ThemeableComponent {
 
 	async translateWord(word: string) {
 		if (!word) return;
+
 		if (this.translations[word]) return this.translations[word];
 		this.translationLoading.set(true);
 		const translations = await this.digest()?.getTranslations(word);

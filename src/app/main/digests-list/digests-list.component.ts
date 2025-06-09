@@ -52,12 +52,12 @@ export class DigestsListComponent implements OnInit {
 
 	tryToCheckIfFreshContentAppeared() {
 		if (this.digests.length > 0) return;
-		setTimeout(async () => {
-			this.digests = await Digest.GetMine();
-			if (this.digests.length === 0) {
-				this.tryToCheckIfFreshContentAppeared();
-			}
-		}, 5000);
+		// setTimeout(async () => {
+		// 	this.digests = await Digest.GetMine();
+		// 	if (this.digests.length === 0) {
+		// 		this.tryToCheckIfFreshContentAppeared();
+		// 	}
+		// }, 5000);
 	}
 
 	async loadOlder() {

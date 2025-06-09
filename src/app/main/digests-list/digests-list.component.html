@@ -1,3 +1,4 @@
+@if (!loadingFirstView) {
 <ion-row>
 	@for (digest of digests; track $index) {
 	<ion-col size="12" size-sm="12" size-md="12" size-lg="6" size-xl="6">
@@ -25,7 +26,7 @@
 
 	}
 </ion-row>
-@if (canLoadMore && !loadingFirstView) {
+@if (canLoadMore) {
 <ion-row>
 	<ion-col size="12" size-sm="12" size-md="12" size-lg="12" size-xl="12">
 		<ion-button
@@ -39,7 +40,7 @@
 		</ion-button>
 	</ion-col>
 </ion-row>
-} @if (loadingMore) {
+} } @if (loadingMore || loadingFirstView) {
 <ion-spinner></ion-spinner>
 }
 <ion-alert

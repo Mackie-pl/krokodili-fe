@@ -9,4 +9,8 @@
 	<ion-card-content>
 		{{ digest().firstLine }}
 	</ion-card-content>
+	aa{{ digest().progress() }}bb @if (!digest().isReady) {
+
+	<ion-progress-bar [value]="digest().progress()"></ion-progress-bar>
+	}
 </ion-card>

@@ -25,7 +25,7 @@ function initializeParse() {
 			environment.PARSE_APP_ID,
 			environment.PARSE_JAVASCRIPT_KEY
 		);
-		Parse.serverURL = 'https://parseapi.back4app.com';
+		Parse.serverURL = 'https://krokodili.b4a.io';
 		Image.Initialize();
 		Language.Initialize();
 	};
