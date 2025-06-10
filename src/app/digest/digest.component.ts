@@ -1,4 +1,4 @@
-import { Component, input, signal } from '@angular/core';
+import { Component, ElementRef, input, signal, ViewChild } from '@angular/core';
 import { Digest } from '../models/digest.model';
 import { MarkdownComponent } from 'ngx-markdown';
 import { ActivatedRoute } from '@angular/router';
@@ -8,10 +8,17 @@ import {
 	IonTitle,
 	IonContent,
 	IonGrid,
+	AnimationController,
+	GestureController,
 } from '@ionic/angular/standalone';
 import { ActionSheetComponent } from '../shared/action-sheet/action-sheet.component';
 import { ThemeableComponent } from '../themeable.component';
 import { StorageService } from '../storage.service';
+import type {
+	Animation,
+	Gesture,
+	GestureDetail,
+} from '@ionic/angular/standalone';
 
 @Component({
 	selector: 'digest',
@@ -35,6 +42,9 @@ export class DigestComponent extends ThemeableComponent {
 	// todo repolace with local storage
 	translations: { [word: string]: string[] } = {};
 	translationLoading = signal<boolean>(false);
+	@ViewChild(ActionSheetComponent, { read: ElementRef })
+	card!: ElementRef<HTMLIonCardElement>;
+
 	constructor(storageService: StorageService, private route: ActivatedRoute) {
 		super(storageService);
 	}
@@ -49,30 +59,25 @@ export class DigestComponent extends ThemeableComponent {
 
 	async loadDigest(digestId: string) {
 		const digest = await Digest.Get(digestId);
-		(window as any).compoundNounsWithinDigest = digest.vocabulary
-			.filter((word) =>
-				word.usedForms.some((form) => form.split(' ').length > 1)
-			)
-			.reduce((acc, word) => {
-				acc.push(
-					...word.usedForms.filter(
-						(form) => form.split(' ').length > 1
-					)
-				);
-				return acc;
-			}, [] as string[]);
-		(window as any).properNounsWithinDigest = digest.vocabulary
-			.filter((word) => word.isProperNoun)
-			.reduce((acc, word) => {
-				acc.push(...word.usedForms);
-				return acc;
-			}, [] as string[]);
+		window.krokodiliVocabulary = digest.vocabulary.reduce((acc, word) => {
+			acc.push(
+				...word.usedForms.map((form) => ({
+					wordOrPhrase: form,
+					isTranslatable: !!word.definition,
+				}))
+			);
+			return acc;
+		}, [] as { wordOrPhrase: string; isTranslatable: boolean }[]);
 		this.digest.set(digest);
 
 		digest.vocabulary.forEach((word) => {
 			if (word.definition) {
-				this.translations[word.normalizedForm] =
+				this.translations[word.normalizedForm.toLowerCase()] =
 					word.definition.split(', ');
+				word.usedForms.forEach((form) => {
+					this.translations[form.toLowerCase()] =
+						word.definition?.split(', ') || [];
+				});
 			}
 		});
 
@@ -90,13 +95,14 @@ export class DigestComponent extends ThemeableComponent {
 
 	onMDClick(event: MouseEvent) {
 		const target = event.target as HTMLElement;
-		console.log(target);
 		if (target.className === 'word') {
 			const normalized =
-				this.digest()?.vocabulary.find((v) =>
-					v.usedForms.includes(target.textContent || '')
-				)?.normalizedForm ||
-				target.textContent ||
+				this.digest()
+					?.vocabulary.find((v) =>
+						v.usedForms.includes(target.textContent || '')
+					)
+					?.normalizedForm.toLowerCase() ||
+				target.textContent?.toLowerCase() ||
 				'';
 			this.focusedWord.set(normalized);
 			this.focusedWordTimestamp.set(Date.now());
@@ -110,7 +116,6 @@ export class DigestComponent extends ThemeableComponent {
 
 	async translateWord(word: string) {
 		if (!word) return;
-
 		if (this.translations[word]) return this.translations[word];
 		this.translationLoading.set(true);
 		const translations = await this.digest()?.getTranslations(word);

@@ -3,6 +3,7 @@
 {
 	"compileOnSave": false,
 	"compilerOptions": {
+		"typeRoots": ["./node_modules/@types", "./src/typings"],
 		"paths": {
 			"@app/*": ["./src/app/*"]
 		},
@@ -19,7 +20,8 @@
 		"moduleResolution": "bundler",
 		"importHelpers": true,
 		"target": "ES2022",
-		"module": "ES2022"
+		"module": "ES2022",
+		"types": []
 	},
 	"angularCompilerOptions": {
 		"enableI18nLegacyMessageIdFormat": false,

@@ -2,7 +2,7 @@ import Parse from 'parse';
 import { Language } from './language.model';
 import { environment } from '../../environments/environment';
 import LiveQuerySubscription from 'parse/types/LiveQuerySubscription';
-import { Signal, signal } from '@angular/core';
+import { Signal, signal, WritableSignal } from '@angular/core';
 
 enum Column {
 	ID = 'objectId',
@@ -39,7 +39,7 @@ export const DigestState = {
 type DigestState = keyof typeof DigestState;
 export class Digest extends Parse.Object {
 	static appearedMap = new Map<string, number>();
-	private _progress = signal(0);
+	private _progress?: WritableSignal<number>;
 	private progressUpdateInterval: any;
 	static liveClient: Parse.LiveQueryClient;
 	static liveQuerySubscription: LiveQuerySubscription | undefined;
@@ -51,17 +51,12 @@ export class Digest extends Parse.Object {
 		state: DigestState;
 	} | null>(null);
 	static readonly CLS_NAME = 'Digest';
-	constructor() {
+	constructor(a?: any, b?: any, c?: any) {
 		super(Digest.CLS_NAME);
-		if (this.id && !Digest.appearedMap.has(this.id))
-			Digest.appearedMap.set(this.id, Date.now());
-		console.log(
-			'constructor',
-			this.id,
-			this.get(Column.WORKING_CURRENT_LENGTH),
-			this.get(Column.WORKING_REST_LENGTH)
-		);
-		this.updateProgress();
+	}
+
+	override initialize(a?: any, b?: any): void {
+		console.log('initialize', this.id, a, b);
 	}
 
 	get isReady(): boolean {
@@ -69,6 +64,14 @@ export class Digest extends Parse.Object {
 	}
 
 	get progress(): Signal<number> {
+		if (!this.id) return signal(0);
+		if (!Digest.appearedMap.has(this.id)) {
+			Digest.appearedMap.set(this.id, Date.now());
+		}
+		if (!this._progress) {
+			this._progress = signal(0);
+			this.updateProgress();
+		}
 		return this._progress;
 	}
 
@@ -186,6 +189,7 @@ export class Digest extends Parse.Object {
 	}
 
 	private updateProgress() {
+		if (this.isReady) return;
 		if (this.progressUpdateInterval)
 			clearInterval(this.progressUpdateInterval);
 		if (!this.id) return;
@@ -196,7 +200,7 @@ export class Digest extends Parse.Object {
 			this.get(Column.WORKING_CURRENT_LENGTH) +
 			this.get(Column.WORKING_REST_LENGTH);
 		const progressNow = elapsedTimeSec / fullTimeSec;
-		this._progress.update((prev) => Math.max(progressNow, prev));
+		this._progress?.update((prev) => Math.max(progressNow, prev));
 		// we need to go towards WORKING_CURRENT_LENGTH but in a way that we never get there, 90% of the way
 		const INTERVAL = 100;
 		const targetProgressAfterCurrentTime =
@@ -216,7 +220,7 @@ export class Digest extends Parse.Object {
 		this.progressUpdateInterval = setInterval(() => {
 			const restOfProgress =
 				targetProgressAfterCurrentTime - this.progress();
-			this._progress.update((prev) =>
+			this._progress?.update((prev) =>
 				Math.min(
 					prev + restOfProgress * TARGET_MULTIPLIER,
 					targetProgressAfterCurrentTime

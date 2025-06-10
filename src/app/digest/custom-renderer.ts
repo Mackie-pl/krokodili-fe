@@ -14,23 +14,53 @@ export function markedOptionsFactory(): MarkedOptions {
 		// Split text into words and non-words (punctuation, spaces, etc.)
 		// Using Unicode property escapes to match any letter from any language
 
-		const tokens = str.match(/\p{L}+|\p{N}+|[^\p{L}\p{N}\s]|\s+/gu) || [];
+		// first try to join words that are translated together with some character
+		window.krokodiliVocabulary.forEach((word) => {
+			str = str.replaceAll(
+				word.wordOrPhrase,
+				word.wordOrPhrase.replaceAll(/\s/g, '___')
+			);
+		});
 
-		return tokens
-			.map((token: string) => {
-				//
+		const tokens =
+			str.match(/[\p{L}|___]+|\p{N}+|[^\p{L}\p{N}\s]|\s+/gu) || [];
+
+		const out = tokens
+			.map((token: string, i, arr) => {
+				// console.log(token, token.includes('\n'));
 				// Only wrap words (Unicode letters or numbers) in spans
-				if (/^[\p{L}]+$/u.test(token)) {
-					if (
-						(window as any).properNounsWithinDigest.includes(token)
-					) {
+				if (/^[\p{L}|___]+$/u.test(token)) {
+					// console.log('token2', token);
+					token = token.replaceAll(/___/g, ' ');
+					// console.log('token3', token);
+					const entryFound = window.krokodiliVocabulary.find(
+						(entry) => entry.wordOrPhrase === token
+					);
+					if (entryFound && !entryFound.isTranslatable) {
 						return token;
 					}
+					// if (
+					// 	(window as any).properNounsWithinDigest.includes(token)
+					// ) {
+					// 	return token;
+					// }
+
+					// const isProperNoun = (window as any).properNounsWithinDigest.find((properNoun: string) => {
+					// 	if (properNoun === token) return true;
+					// 	if (properNoun.split(' ').includes(token)) {
+
+					// 	}
+					// });
+					// if (isProperNoun) {
+					// 	return `<span class="word proper-noun">${token}</span>`;
+					// }
 					return `<span class="word">${token}</span>`;
 				}
 				return token;
 			})
 			.join('');
+		console.log(out);
+		return out;
 	};
 
 	renderer.link = (link: Tokens.Link) => {
@@ -39,6 +69,7 @@ export function markedOptionsFactory(): MarkedOptions {
 
 	renderer.text = (text: Tokens.Text) => {
 		let str = text.text;
+		console.log('renderer.text', str);
 
 		// if it's url, return it as is
 		if (str.startsWith('http')) {
@@ -62,7 +93,7 @@ export function markedOptionsFactory(): MarkedOptions {
 	return {
 		renderer: renderer,
 		gfm: true,
-		breaks: false,
+		breaks: true,
 		pedantic: false,
 	};
 }
