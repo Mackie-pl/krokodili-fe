@@ -2,6 +2,7 @@ interface Window {
 	krokodiliVocabulary: {
 		wordOrPhrase: string;
 		isTranslatable: boolean;
+		isChallenging: boolean;
 	}[];
 }
 

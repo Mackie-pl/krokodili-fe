@@ -86,8 +86,18 @@ export class WelcomeComponent extends ThemeableComponent implements OnInit {
 	}
 
 	async onWelcomeFinishing(userPromise?: Promise<User>) {
+		console.log('onWelcomeFinishing', userPromise);
 		this.loadingOnWelcomeFinishing = true;
-		if (userPromise) await userPromise;
+		let userPromiseError = false;
+		if (userPromise)
+			await userPromise.catch(() => (userPromiseError = true));
+		console.log('userPromiseError', userPromiseError);
+
+		if (userPromiseError) {
+			this.loadingOnWelcomeFinishing = false;
+			// this.errorAlert = 'Google login failed.';
+			return;
+		}
 
 		let error: any;
 		try {

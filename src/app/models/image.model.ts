@@ -2,6 +2,7 @@ import Parse from 'parse';
 
 enum Column {
 	FILE = 'file',
+	COLOR = 'color',
 }
 
 export class Image extends Parse.Object {
@@ -12,6 +13,10 @@ export class Image extends Parse.Object {
 
 	get file() {
 		return this.get(Column.FILE);
+	}
+
+	get color() {
+		return this.get(Column.COLOR);
 	}
 
 	static Initialize() {

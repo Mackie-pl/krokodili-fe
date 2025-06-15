@@ -27,4 +27,9 @@ export class LoginSectionComponent {
 		console.log('continue as guest');
 		this.userPromise.emit(User.LogInAsGuest());
 	}
+
+	async continueWithGoogle() {
+		console.log('continue with google');
+		this.userPromise.emit(User.getGoogleLoginUrl());
+	}
 }

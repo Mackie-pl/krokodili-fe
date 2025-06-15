@@ -8,17 +8,10 @@ import {
 	IonTitle,
 	IonContent,
 	IonGrid,
-	AnimationController,
-	GestureController,
 } from '@ionic/angular/standalone';
 import { ActionSheetComponent } from '../shared/action-sheet/action-sheet.component';
 import { ThemeableComponent } from '../themeable.component';
 import { StorageService } from '../storage.service';
-import type {
-	Animation,
-	Gesture,
-	GestureDetail,
-} from '@ionic/angular/standalone';
 
 @Component({
 	selector: 'digest',
@@ -33,6 +26,9 @@ import type {
 		ActionSheetComponent,
 	],
 	styleUrls: ['digest.component.scss'],
+	host: {
+		'[style.--digest-vibrant-color]': 'digest()?.imageColor',
+	},
 })
 export class DigestComponent extends ThemeableComponent {
 	digest = signal<Digest | null>(null);
@@ -64,10 +60,11 @@ export class DigestComponent extends ThemeableComponent {
 				...word.usedForms.map((form) => ({
 					wordOrPhrase: form,
 					isTranslatable: !!word.definition,
+					isChallenging: word.isChallenging,
 				}))
 			);
 			return acc;
-		}, [] as { wordOrPhrase: string; isTranslatable: boolean }[]);
+		}, [] as { wordOrPhrase: string; isTranslatable: boolean; isChallenging: boolean }[]);
 		this.digest.set(digest);
 
 		digest.vocabulary.forEach((word) => {
@@ -86,7 +83,7 @@ export class DigestComponent extends ThemeableComponent {
 			/\[(\d+)\]/g,
 			(match, number) => {
 				const citation = digest.citations[number - 1];
-				return `[${JSON.stringify(citation)}](${citation.url})`;
+				return `[${JSON.stringify(citation)}](${citation.url}) `;
 			}
 		);
 
@@ -95,7 +92,9 @@ export class DigestComponent extends ThemeableComponent {
 
 	onMDClick(event: MouseEvent) {
 		const target = event.target as HTMLElement;
-		if (target.className === 'word') {
+		console.log(target.className);
+		if (target.classList.contains('word')) {
+			console.log(target.textContent);
 			const normalized =
 				this.digest()
 					?.vocabulary.find((v) =>
@@ -104,6 +103,7 @@ export class DigestComponent extends ThemeableComponent {
 					?.normalizedForm.toLowerCase() ||
 				target.textContent?.toLowerCase() ||
 				'';
+			console.log(normalized);
 			this.focusedWord.set(normalized);
 			this.focusedWordTimestamp.set(Date.now());
 			this.translateWord(normalized);

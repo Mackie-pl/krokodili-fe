@@ -50,3 +50,6 @@ export const appConfig: ApplicationConfig = {
 		},
 	],
 };
+// https://accounts.google.com/o/oauth2/v2/auth?scope=https%3A//www.googleapis.com/auth/drive.metadata.readonly&access_type=offline&include_granted_scopes=true&response_type=code&state=state_parameter_passthrough_value&redirect_uri=https://krokodili.b4a.io/redirect&client_id=711422987291-sjbjg768714fp9pt6ec1krq6b8h9rfjg.apps.googleusercontent.com
+
+// https://accounts.google.com/o/oauth2/v2/auth?scope=https%3A//www.googleapis.com/auth/drive.metadata.readonly&access_type=offline&include_granted_scopes=true&response_type=code&state=state_parameter_passthrough_value&redirect_uri=https%3A%2F%2Fkrokodili.b4a.io%2Fredirect&client_id=711422987291-sjbjg768714fp9pt6ec1krq6b8h9rfjg.apps.googleusercontent.com

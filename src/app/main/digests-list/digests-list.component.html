@@ -1,6 +1,6 @@
 @if (!loadingFirstView) {
 <ion-row>
-	@for (digest of digests; track $index) {
+	@for (digest of digests; track digest.id) {
 	<ion-col size="12" size-sm="12" size-md="12" size-lg="6" size-xl="6">
 		<digest-card
 			[digest]="digest"

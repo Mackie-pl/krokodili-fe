@@ -153,6 +153,10 @@ ion-card {
 			border-bottom-color: rgba(255, 255, 255, 0.4);
 		}
 	}
+
+	&.challenging {
+		border-bottom-color: var(--digest-vibrant-color);
+	}
 }
 
 .chip {

@@ -54,12 +54,14 @@ export function markedOptionsFactory(): MarkedOptions {
 					// if (isProperNoun) {
 					// 	return `<span class="word proper-noun">${token}</span>`;
 					// }
-					return `<span class="word">${token}</span>`;
+					return `<span class="word ${
+						entryFound?.isChallenging ? 'challenging' : ''
+					}">${token}</span>`;
 				}
 				return token;
 			})
 			.join('');
-		console.log(out);
+		// console.log(out);
 		return out;
 	};
 
@@ -68,8 +70,24 @@ export function markedOptionsFactory(): MarkedOptions {
 	};
 
 	renderer.text = (text: Tokens.Text) => {
-		let str = text.text;
-		console.log('renderer.text', str);
+		if (text.tokens)
+			return text.tokens
+				.map((token) => {
+					if (token.type === 'text') {
+						return parseTextToken(token.text);
+					} else if (token.type === 'em') {
+						return `<em>${parseTextToken(token.text)}</em>`;
+					} else if (token.type === 'strong') {
+						return `<strong>${parseTextToken(token.text)}</strong>`;
+					}
+					return '';
+				})
+				.join('');
+		return parseTextToken(text.text);
+	};
+
+	const parseTextToken = (text: string) => {
+		let str = text;
 
 		// if it's url, return it as is
 		if (str.startsWith('http')) {
@@ -80,13 +98,17 @@ export function markedOptionsFactory(): MarkedOptions {
 
 		const linkRegexp = /\[({".*?"})\]\(([^)]+)\)/g;
 		let match;
-		while ((match = linkRegexp.exec(str)) !== null) {
-			returnParts.push(parseStrIntoWords(str.slice(0, match.index)));
+		const strCopy = str;
+		let strIndex = 0;
+		while ((match = linkRegexp.exec(strCopy)) !== null) {
+			returnParts.push(
+				parseStrIntoWords(str.slice(strIndex, match.index))
+			);
 			returnParts.push(parseLink(match[1]));
-			str = str.slice(match.index + match[0].length);
+			strIndex = match.index + match[0].length;
 		}
 
-		returnParts.push(parseStrIntoWords(str));
+		returnParts.push(parseStrIntoWords(str.slice(strIndex)));
 		return returnParts.join('');
 	};
 

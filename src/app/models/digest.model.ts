@@ -40,7 +40,7 @@ type DigestState = keyof typeof DigestState;
 export class Digest extends Parse.Object {
 	static appearedMap = new Map<string, number>();
 	private _progress?: WritableSignal<number>;
-	private progressUpdateInterval: any;
+	static progressUpdateInterval: any;
 	static liveClient: Parse.LiveQueryClient;
 	static liveQuerySubscription: LiveQuerySubscription | undefined;
 	_title = '';
@@ -75,14 +75,45 @@ export class Digest extends Parse.Object {
 		return this._progress;
 	}
 
+	_content = '';
 	get content(): string {
-		return this.get(Column.CONTENT);
+		if (!this.isReady) return '...';
+		if (!this._content) {
+			this._content = this.get(Column.CONTENT);
+			this._content = this._content.replaceAll('vecchio', '**vecchio**');
+			if (this._content.indexOf('```') === 0) {
+				console.log('content', this._content);
+				const endsWith = this._content.endsWith('```');
+				console.log('endsWith', endsWith);
+				this._content = this._content.slice(
+					3,
+					endsWith ? -3 : undefined
+				);
+			}
+			const contentLines = this._content.split('\n');
+			if (
+				contentLines[0].trim().toLowerCase() ===
+				this.language.name.toLowerCase()
+			) {
+				contentLines.shift();
+			}
+			// we don't want title to end with date, like Grandi Notizie sui Videogiochi – 12 Giugno 2025
+			const dateRegexp = /(–\s)?\d{2} \w+ 20\d{2}$/;
+			if (contentLines[0].match(dateRegexp)) {
+				contentLines[0] = contentLines[0]
+					.replace(dateRegexp, '')
+					.trim();
+			}
+			this._content = contentLines.join('\n');
+			console.log('content', this._content);
+		}
+		return this._content;
 	}
 
 	get title(): string {
 		if (!this.isReady) return 'Preparing...';
 		if (!this._title) {
-			this._title = this.get(Column.CONTENT)
+			this._title = this.content
 				.split('\n')[0]
 				.trim()
 				.replace(/\*+/g, '')
@@ -147,6 +178,10 @@ export class Digest extends Parse.Object {
 		);
 	}
 
+	get imageColor(): string {
+		return this.get(Column.IMAGE)?.color || '#000000';
+	}
+
 	get language(): Language {
 		return this.get(Column.LANGUAGE);
 	}
@@ -190,8 +225,8 @@ export class Digest extends Parse.Object {
 
 	private updateProgress() {
 		if (this.isReady) return;
-		if (this.progressUpdateInterval)
-			clearInterval(this.progressUpdateInterval);
+		if (Digest.progressUpdateInterval)
+			clearInterval(Digest.progressUpdateInterval);
 		if (!this.id) return;
 		const elapsedTimeSec =
 			(Date.now() - Digest.appearedMap.get(this.id)!) / 1000;
@@ -217,7 +252,7 @@ export class Digest extends Parse.Object {
 			this.get(Column.WORKING_CURRENT_LENGTH),
 			this.get(Column.WORKING_REST_LENGTH)
 		);
-		this.progressUpdateInterval = setInterval(() => {
+		Digest.progressUpdateInterval = setInterval(() => {
 			const restOfProgress =
 				targetProgressAfterCurrentTime - this.progress();
 			this._progress?.update((prev) =>

@@ -21,6 +21,7 @@
     "@capacitor/android": "^7.2.0",
     "@capacitor/angular": "^2.0.3",
     "@capacitor/core": "latest",
+    "@capacitor/device": "^7.0.1",
     "@capacitor/ios": "^7.2.0",
     "@ionic/angular": "^8.5.7",
     "@ionic/storage-angular": "^4.0.0",
