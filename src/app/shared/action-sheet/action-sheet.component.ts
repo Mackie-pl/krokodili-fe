@@ -38,7 +38,7 @@ export class ActionSheetComponent {
 	) {
 		this.el = el.nativeElement;
 		effect(() => {
-			if (!this.started && this.activeTimestamp() > 0) {
+			if (this.activeTimestamp() > 0 && !this.started) {
 				this.animation.progressStart();
 
 				this.animation.progressStep(this.activeTimestamp() > 0 ? 1 : 0);
