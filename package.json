@@ -5,7 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "start-for-android": "ng serve --host 0.0.0.0 --port 4200 --disable-host-check",
-    "build": "ng build && move dist\\krokodili-fe\\browser dist\\krokodili-fe\\browser\\app",
+    "build": "ng build && move dist\\krokodili-fe\\browser dist\\krokodili-fe\\app && mkdir dist\\krokodili-fe\\browser && move dist\\krokodili-fe\\app dist\\krokodili-fe\\browser",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
