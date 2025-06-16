@@ -16,6 +16,7 @@ import { provideMarkdown } from 'ngx-markdown';
 import { MARKED_OPTIONS } from 'ngx-markdown';
 import { markedOptionsFactory } from './digest/custom-renderer';
 import { Language } from './models/language.model';
+import { APP_BASE_HREF } from '@angular/common';
 
 // Function to initialize Parse
 function initializeParse() {
@@ -47,6 +48,10 @@ export const appConfig: ApplicationConfig = {
 			provide: APP_INITIALIZER,
 			useFactory: initializeParse,
 			multi: true,
+		},
+		{
+			provide: APP_BASE_HREF,
+			useValue: '/app/',
 		},
 	],
 };
