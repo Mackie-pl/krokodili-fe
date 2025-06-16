@@ -5,9 +5,10 @@
     "ng": "ng",
     "start": "ng serve",
     "start-for-android": "ng serve --host 0.0.0.0 --port 4200 --disable-host-check",
-    "build": "ng build && node postbuild.js",
+    "build": "ng build && node postbuild.js && npm run build-landing-page",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+	"build-landing-page": "npx parcel build landing-page/index.pug --dist-dir dist/krokodili-fe/browser"
   },
   "private": true,
   "dependencies": {
@@ -38,6 +39,8 @@
     "@angular/compiler-cli": "^19.2.0",
     "@capacitor/cli": "latest",
     "@ionic/angular-toolkit": "latest",
+    "@parcel/transformer-pug": "^2.15.2",
+    "@parcel/transformer-sass": "^2.15.2",
     "@types/jasmine": "~5.1.0",
     "jasmine-core": "~5.6.0",
     "karma": "~6.4.0",
