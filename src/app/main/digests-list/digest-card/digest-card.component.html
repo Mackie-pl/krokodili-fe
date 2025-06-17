@@ -7,10 +7,10 @@
 	</ion-card-header>
 
 	<ion-card-content>
-		aa{{ digest().progress() }}bb {{ digest().firstLine }}
+		{{ digest().firstLine }}
 	</ion-card-content>
 	@if (!digest().isReady) {
 
-	<ion-progress-bar [value]="digest().progress()"></ion-progress-bar>
+	<ion-progress-bar [value]="digest().progress"></ion-progress-bar>
 	}
 </ion-card>

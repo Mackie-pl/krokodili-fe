@@ -38,18 +38,18 @@ export const DigestState = {
 };
 type DigestState = keyof typeof DigestState;
 export class Digest extends Parse.Object {
-	static appearedMap = new Map<string, number>();
-	private _progress?: WritableSignal<number>;
+	static appearedMap = new Map<string, { time: number; object: Digest }>();
+	private _progress?: number;
 	static progressUpdateInterval: any;
 	static liveClient: Parse.LiveQueryClient;
 	static liveQuerySubscription: LiveQuerySubscription | undefined;
 	_title = '';
 	_firstLine = '';
-	updateSignal = signal<{
-		currentOperationSeconds?: number;
-		restSeconds?: number;
-		state: DigestState;
-	} | null>(null);
+	// updateSignal = signal<{
+	// 	currentOperationSeconds?: number;
+	// 	restSeconds?: number;
+	// 	state: DigestState;
+	// } | null>(null);
 	static readonly CLS_NAME = 'Digest';
 	constructor(a?: any, b?: any, c?: any) {
 		super(Digest.CLS_NAME);
@@ -63,14 +63,14 @@ export class Digest extends Parse.Object {
 		return this.get(Column.STATE) === DigestState.READY;
 	}
 
-	get progress(): Signal<number> {
-		if (!this.id) return signal(0);
+	get progress(): number {
+		if (!this.id) return 0;
 		if (!Digest.appearedMap.has(this.id)) {
-			Digest.appearedMap.set(this.id, Date.now());
+			Digest.appearedMap.set(this.id, { time: Date.now(), object: this });
 		}
-		if (!this._progress) {
-			this._progress = signal(0);
-			this.updateProgress();
+		if (this._progress === undefined) {
+			this._progress = 0;
+			this.updateProgress(this);
 		}
 		return this._progress;
 	}
@@ -186,6 +186,41 @@ export class Digest extends Parse.Object {
 		return this.get(Column.LANGUAGE);
 	}
 
+	private static subscribeToUpdates(notReadyDigests: Digest[]) {
+		console.log('subscribing to updates', notReadyDigests);
+		Digest.liveClient = new Parse.LiveQueryClient({
+			applicationId: environment.PARSE_APP_ID,
+			serverURL: 'wss://' + environment.PARSE_SERVER_URL,
+			javascriptKey: environment.PARSE_JAVASCRIPT_KEY,
+		} as any);
+		Digest.liveClient.open();
+		const query = new Parse.Query(Digest.CLS_NAME);
+		query.containedIn(
+			Column.ID,
+			notReadyDigests.map((digest) => digest.id)
+		);
+		Digest.liveQuerySubscription = Digest.liveClient.subscribe(query);
+		Digest.liveQuerySubscription?.on('update', (object: Digest) => {
+			console.log(
+				object,
+				object.get(Column.STATE),
+				object.get(Column.WORKING_CURRENT_LENGTH),
+				object.get(Column.WORKING_REST_LENGTH)
+			);
+
+			const objToUpdate = Digest.appearedMap.get(object.id!)?.object;
+
+			if (object.isReady) {
+				object.get(Column.IMAGE)?.fetch();
+				objToUpdate?.set(Column.STATE, DigestState.READY);
+				if (Digest.progressUpdateInterval)
+					clearInterval(Digest.progressUpdateInterval);
+			} else {
+				objToUpdate?.updateProgress(object);
+			}
+		});
+	}
+
 	static async GetMine(olderPage?: number) {
 		const digests: Digest[] = await Parse.Cloud.run('getMyDigests', {
 			olderPage,
@@ -193,75 +228,84 @@ export class Digest extends Parse.Object {
 		// if there is digest in preparation, start live query
 		const notReadyDigests = digests.filter((digest) => !digest.isReady);
 		if (notReadyDigests.length > 0 && !Digest.liveClient) {
-			Digest.liveClient = new Parse.LiveQueryClient({
-				applicationId: environment.PARSE_APP_ID,
-				serverURL: 'wss://' + environment.PARSE_SERVER_URL,
-				javascriptKey: environment.PARSE_JAVASCRIPT_KEY,
-			} as any);
-			Digest.liveClient.open();
-			const query = new Parse.Query(Digest.CLS_NAME);
-			query.containedIn(
-				Column.ID,
-				notReadyDigests.map((digest) => digest.id)
-			);
-			Digest.liveQuerySubscription = Digest.liveClient.subscribe(query);
-			Digest.liveQuerySubscription?.on('update', (object: Digest) => {
-				console.log(
-					object,
-					object.get(Column.STATE),
-					object.get(Column.WORKING_CURRENT_LENGTH),
-					object.get(Column.WORKING_REST_LENGTH)
-				);
-
-				if (object.get(Column.STATE) === DigestState.READY) {
-					object.get(Column.IMAGE)?.fetch();
-				} else {
-					object.updateProgress();
-				}
-			});
+			Digest.subscribeToUpdates(notReadyDigests);
 		}
 		return digests;
 	}
 
-	private updateProgress() {
+	private updateProgress(updatedDigest: Digest) {
 		if (this.isReady) return;
 		if (Digest.progressUpdateInterval)
 			clearInterval(Digest.progressUpdateInterval);
 		if (!this.id) return;
 		const elapsedTimeSec =
-			(Date.now() - Digest.appearedMap.get(this.id)!) / 1000;
+			(Date.now() - Digest.appearedMap.get(this.id)!.time) / 1000;
 		const fullTimeSec =
 			elapsedTimeSec +
-			this.get(Column.WORKING_CURRENT_LENGTH) +
-			this.get(Column.WORKING_REST_LENGTH);
+			updatedDigest.get(Column.WORKING_CURRENT_LENGTH) +
+			updatedDigest.get(Column.WORKING_REST_LENGTH);
 		const progressNow = elapsedTimeSec / fullTimeSec;
-		this._progress?.update((prev) => Math.max(progressNow, prev));
+		this._progress = Math.max(progressNow, this._progress || 0);
 		// we need to go towards WORKING_CURRENT_LENGTH but in a way that we never get there, 90% of the way
-		const INTERVAL = 100;
+		const INTERVAL = 200;
 		const targetProgressAfterCurrentTime =
-			(elapsedTimeSec + this.get(Column.WORKING_CURRENT_LENGTH)) /
+			(elapsedTimeSec +
+				updatedDigest.get(Column.WORKING_CURRENT_LENGTH)) /
 			fullTimeSec;
 		const TARGET_MULTIPLIER = 0.9;
-		const now = Date.now();
-		console.log(
-			'progress value1',
-			this.progress(),
+		const start = Date.now();
+		const startProgress = this.progress;
+		console.log('progress value1', {
+			progress: this.progress,
 			elapsedTimeSec,
 			fullTimeSec,
 			targetProgressAfterCurrentTime,
-			this.get(Column.WORKING_CURRENT_LENGTH),
-			this.get(Column.WORKING_REST_LENGTH)
-		);
+			workingCurrentLength: updatedDigest.get(
+				Column.WORKING_CURRENT_LENGTH
+			),
+			workingRestLength: updatedDigest.get(Column.WORKING_REST_LENGTH),
+		});
+		const restOfProgress = targetProgressAfterCurrentTime - this.progress;
 		Digest.progressUpdateInterval = setInterval(() => {
-			const restOfProgress =
-				targetProgressAfterCurrentTime - this.progress();
-			this._progress?.update((prev) =>
+			const elapsedSinceUpdate = Date.now() - start;
+
+			/* eg. 0.5 if half of the time has passed, can be above 1 if the time has passed */
+			const progressOfCurrentStage =
+				elapsedSinceUpdate / (fullTimeSec * 1000);
+
+			const steadyProgressPart = Math.min(progressOfCurrentStage, 1);
+			const slowedDownPart =
+				progressOfCurrentStage > 1 ? progressOfCurrentStage - 1 : 0;
+
+			const steadyIncrease =
+				steadyProgressPart * restOfProgress * TARGET_MULTIPLIER;
+			const slowedDownIncrease =
+				Math.tanh(slowedDownPart) *
+				restOfProgress *
+				(1 - TARGET_MULTIPLIER);
+
+			const increase = steadyIncrease + slowedDownIncrease;
+			this._progress = Math.max(
+				this._progress || 0,
 				Math.min(
-					prev + restOfProgress * TARGET_MULTIPLIER,
+					startProgress + increase,
 					targetProgressAfterCurrentTime
 				)
 			);
-			console.log('progress value2', this.progress());
+			console.log('progress value2', {
+				progress: this.progress,
+				progressOfCurrentStage,
+				steadyProgressPart,
+				steadyIncrease,
+				slowedDownPart,
+				slowedDownIncrease,
+				increase,
+				elapsedTimeSec,
+				fullTimeSec,
+				targetProgressAfterCurrentTime,
+				workingCurrentLength: this.get(Column.WORKING_CURRENT_LENGTH),
+				workingRestLength: this.get(Column.WORKING_REST_LENGTH),
+			});
 		}, INTERVAL);
 	}
 
@@ -290,6 +334,8 @@ export class Digest extends Parse.Object {
 }
 
 Parse.Object.registerSubclass(Digest.CLS_NAME, Digest);
+
+Parse.Object.enableSingleInstance();
 
 // <welcome _nghost-ng-c1799751041 class=​"ion-page ion-page-hidden" style=​"color-scheme:​ dark;​ z-index:​ 100;​" aria-hidden=​"true">​…​</welcome>​slot
 // digest.model.ts:163 t {id: 'mSTUB3jHws', _localId: undefined, _objCount: 38, className: 'Digest', appearedMap: Map(0), …} 'preparing' 5 25
