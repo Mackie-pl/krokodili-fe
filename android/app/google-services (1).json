@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "33003692568",
+    "project_id": "krokodili-579c8",
+    "storage_bucket": "krokodili-579c8.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:33003692568:android:18e20e1bc0c74382ef596d",
+        "android_client_info": {
+          "package_name": "com.purrfectcode.krokodili"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyADR67vr-ri3x5R0AB4lMpNZqwJYdGkqYw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
