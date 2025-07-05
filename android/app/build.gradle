@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-
+apply plugin: 'com.google.gms.google-services'
 android {
     namespace "com.purrfectcode.krokodili"
     compileSdk rootProject.ext.compileSdkVersion
@@ -44,6 +44,8 @@ dependencies {
     androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
     implementation project(':capacitor-cordova-android-plugins')
+//	implementation 'com.google.firebase:firebase-core:latest.version.here'
+	implementation 'com.google.firebase:firebase-messaging:24.1.2'
 }
 
 apply from: 'capacitor.build.gradle'

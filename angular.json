@@ -99,6 +99,8 @@
           "options": {
             "allowedHosts": [
               "cb0a-85-221-138-44.ngrok-free.app",
+			  "marmoset-splendid-jay.ngrok-free.app",
+			  "192.168.50.59",
               ".ngrok-free.app"
             ]
           },
