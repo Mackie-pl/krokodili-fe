@@ -11,6 +11,7 @@ import {
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { moonOutline, sunnyOutline } from 'ionicons/icons';
+import { User } from './models/user.model';
 
 @Component({
 	selector: 'app-root',
@@ -34,5 +35,7 @@ export class AppComponent implements OnInit {
 		addIcons({ sunnyOutline, moonOutline });
 	}
 
-	async ngOnInit(): Promise<any> {}
+	async ngOnInit(): Promise<any> {
+		User.bumpVisitDate();
+	}
 }

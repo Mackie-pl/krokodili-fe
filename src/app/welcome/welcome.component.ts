@@ -22,7 +22,10 @@ import { LoginSectionComponent } from './login-section/login-section.component';
 import { User } from '../models/user.model';
 import { Subscription } from '../models/subscription.model';
 import Parse from 'parse';
-import { registerNotifications } from '@app/services/push-notifications.service';
+import {
+	addListeners,
+	registerNotifications,
+} from '@app/services/push-notifications.service';
 
 @Component({
 	selector: 'welcome',
@@ -91,7 +94,10 @@ export class WelcomeComponent extends ThemeableComponent implements OnInit {
 		this.loadingOnWelcomeFinishing = true;
 		let userPromiseError = false;
 		if (userPromise)
-			await userPromise.catch(() => (userPromiseError = true));
+			await userPromise.catch((e) => {
+				console.log('userPromiseError', e);
+				userPromiseError = true;
+			});
 		console.log('userPromiseError', userPromiseError);
 
 		if (userPromiseError) {
@@ -128,6 +134,7 @@ export class WelcomeComponent extends ThemeableComponent implements OnInit {
 	}
 
 	doRegisterNotifications() {
+		addListeners();
 		registerNotifications();
 	}
 }

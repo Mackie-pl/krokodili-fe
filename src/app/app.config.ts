@@ -17,6 +17,7 @@ import { MARKED_OPTIONS } from 'ngx-markdown';
 import { markedOptionsFactory } from './digest/custom-renderer';
 import { Language } from './models/language.model';
 import { APP_BASE_HREF } from '@angular/common';
+import { Device } from '@capacitor/device';
 
 // Function to initialize Parse
 function initializeParse() {
@@ -29,7 +30,17 @@ function initializeParse() {
 		Parse.serverURL = 'https://krokodili.b4a.io';
 		Image.Initialize();
 		Language.Initialize();
+		initializeInstallation();
 	};
+}
+
+async function initializeInstallation() {
+	const deviceInfo = await Device.getInfo();
+	if (deviceInfo.platform === 'android') {
+		Parse.Installation.DEVICE_TYPES.WEB = 'android';
+	}
+	const installation = await Parse.Installation.currentInstallation();
+	await installation.save();
 }
 
 export const appConfig: ApplicationConfig = {
