@@ -93,7 +93,7 @@ export class User extends Parse.User {
 		return anonUser;
 	}
 
-	static async getGoogleLoginUrl() {
+	static async getGoogleLoginUrl(creatingUser = false) {
 		const params = {
 			redirectUri: window.location.origin + '/callback/google-oauth.html',
 		};
@@ -134,7 +134,10 @@ export class User extends Parse.User {
 								messageHandler
 							);
 							// Exchange the code for a token
-							this.exchangeCodeForToken(event.data.code)
+							this.exchangeCodeForToken(
+								event.data.code,
+								creatingUser
+							)
 								.then((user) => resolve(user))
 								.catch(reject);
 							break;
@@ -184,7 +187,10 @@ export class User extends Parse.User {
 		throw new Error('Google OAuth is only supported in web browsers');
 	}
 
-	private static async exchangeCodeForToken(code: string): Promise<User> {
+	private static async exchangeCodeForToken(
+		code: string,
+		creatingUser = false
+	): Promise<User> {
 		console.log('Exchanging code for token:', code);
 		try {
 			// Call your backend to exchange the code for a token
@@ -201,9 +207,12 @@ export class User extends Parse.User {
 			};
 			const user = new User();
 			await user.linkWith('google', { authData });
-			user.set('username', authDetails.name);
-			user.set('email', authDetails.email);
-			await user.save();
+
+			if (creatingUser) {
+				user.set('username', authDetails.name);
+				user.set('email', authDetails.email);
+				await user.save();
+			}
 			return user;
 		} catch (error) {
 			console.error('Failed to exchange code for token:', error);

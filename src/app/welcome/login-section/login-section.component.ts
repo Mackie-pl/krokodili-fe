@@ -30,6 +30,6 @@ export class LoginSectionComponent {
 
 	async continueWithGoogle() {
 		console.log('continue with google');
-		this.userPromise.emit(User.getGoogleLoginUrl());
+		this.userPromise.emit(User.getGoogleLoginUrl(true));
 	}
 }
