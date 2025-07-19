@@ -30,7 +30,7 @@ function initializeParse() {
 		Parse.serverURL = 'https://krokodili.b4a.io';
 		Image.Initialize();
 		Language.Initialize();
-		initializeInstallation();
+		// initializeInstallation();
 	};
 }
 
@@ -40,7 +40,11 @@ async function initializeInstallation() {
 		Parse.Installation.DEVICE_TYPES.WEB = 'android';
 	}
 	const installation = await Parse.Installation.currentInstallation();
-	await installation.save();
+	try {
+		await installation.save();
+	} catch (error) {
+		console.error('Error saving installation:', error);
+	}
 }
 
 export const appConfig: ApplicationConfig = {

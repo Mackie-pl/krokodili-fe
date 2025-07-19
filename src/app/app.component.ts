@@ -10,8 +10,7 @@ import {
 	IonApp,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { moonOutline, sunnyOutline } from 'ionicons/icons';
-import { User } from './models/user.model';
+import { moonOutline, sunnyOutline, logOutOutline } from 'ionicons/icons';
 
 @Component({
 	selector: 'app-root',
@@ -32,10 +31,8 @@ export class AppComponent implements OnInit {
 	title = 'krokodili-fe';
 
 	constructor(private router: Router) {
-		addIcons({ sunnyOutline, moonOutline });
+		addIcons({ sunnyOutline, moonOutline, logOutOutline });
 	}
 
-	async ngOnInit(): Promise<any> {
-		User.bumpVisitDate();
-	}
+	async ngOnInit(): Promise<any> {}
 }

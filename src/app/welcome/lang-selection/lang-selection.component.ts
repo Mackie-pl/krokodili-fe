@@ -5,6 +5,7 @@ import { ThemeableComponent } from '@app/themeable.component';
 import { StorageService } from '@app/storage.service';
 import { SanitizeHtmlPipe } from '@app/shared/pipes/sanitize-html.pipe';
 import { IonRow, IonCol, IonGrid, IonButton } from '@ionic/angular/standalone';
+import { Router } from '@angular/router';
 
 @Component({
 	selector: 'app-lang-selection',
@@ -28,7 +29,7 @@ export class LangSelectionComponent
 	loading = true;
 	selectedLanguage: Language | null = null;
 
-	constructor(storageService: StorageService) {
+	constructor(storageService: StorageService, private router: Router) {
 		super(storageService);
 	}
 
@@ -79,5 +80,9 @@ export class LangSelectionComponent
 	continue() {
 		if (!this.selectedLanguage) return;
 		this.languageSelected.emit(this.selectedLanguage);
+	}
+
+	logIn() {
+		this.router.navigate(['/login']);
 	}
 }

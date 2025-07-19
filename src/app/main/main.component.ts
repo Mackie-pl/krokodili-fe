@@ -7,15 +7,23 @@ import {
 	IonRow,
 	IonCol,
 	IonGrid,
+	IonButton,
+	IonButtons,
+	IonIcon,
 } from '@ionic/angular/standalone';
 import { ThemeableComponent } from '../themeable.component';
 import { StorageService } from '../storage.service';
 import { DigestsListComponent } from './digests-list/digests-list.component';
+import { User } from '../models/user.model';
+import { Router } from '@angular/router';
+import { registerNotifications } from '../services/push-notifications.service';
 
 @Component({
 	imports: [
+		IonIcon,
+		IonButtons,
+		IonButton,
 		IonGrid,
-		IonCol,
 		IonRow,
 		IonContent,
 		IonTitle,
@@ -27,11 +35,21 @@ import { DigestsListComponent } from './digests-list/digests-list.component';
 	templateUrl: 'main.component.html',
 })
 export class MainComponent extends ThemeableComponent implements OnInit {
-	constructor(storageService: StorageService) {
+	constructor(storageService: StorageService, private router: Router) {
 		super(storageService);
 	}
 
 	override async ngOnInit(): Promise<void> {
 		await super.ngOnInit();
+		User.bumpVisitDate();
+	}
+
+	logOut() {
+		User.logOut();
+		this.router.navigate(['/welcome']);
+	}
+
+	doRegisterNotifications() {
+		registerNotifications();
 	}
 }

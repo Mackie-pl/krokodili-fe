@@ -3,7 +3,21 @@ import { Subscription } from './subscription.model';
 import { globalErrorHandler } from '../shared/global-error-handler';
 import { Device } from '@capacitor/device';
 
+enum Column {
+	LAST_VISIT_DATE = 'lastVisitDate',
+	NAME = 'name',
+	EMAIL = 'email',
+	PASSWORD = 'password',
+	USERNAME = 'username',
+}
+
 export class User extends Parse.User {
+	static async bumpVisitDate() {
+		const user = Parse.User.current();
+		if (!user) return;
+		user.set(Column.LAST_VISIT_DATE, new Date());
+		user.save();
+	}
 	static readonly GOOGLE_SIGN_IN_FUNC = 'GoogleSignIn';
 	static readonly GOOGLE_TOKEN_FUNC = 'GoogleToken';
 	static readonly CLS_NAME = '_User';
@@ -14,27 +28,35 @@ export class User extends Parse.User {
 	}
 
 	get name() {
-		return this.get('name');
+		return this.get(Column.NAME);
 	}
 
 	set name(name: string) {
-		this.set('name', name);
+		this.set(Column.NAME, name);
 	}
 
 	get email() {
-		return this.get('email');
+		return this.get(Column.EMAIL);
 	}
 
 	set email(email: string) {
-		this.set('email', email);
+		this.set(Column.EMAIL, email);
 	}
 
 	get password() {
-		return this.get('password');
+		return this.get(Column.PASSWORD);
 	}
 
 	set password(password: string) {
-		this.set('password', password);
+		this.set(Column.PASSWORD, password);
+	}
+
+	get username() {
+		return this.get(Column.USERNAME);
+	}
+
+	set username(username: string) {
+		this.set(Column.USERNAME, username);
 	}
 
 	async getSubscriptions() {
@@ -45,11 +67,22 @@ export class User extends Parse.User {
 		return subsByUser;
 	}
 
+	static uuidv4() {
+		return '10000000-1000-4000-8000-100000000000'.replace(/[018]/g, (c) =>
+			(
+				+c ^
+				(crypto.getRandomValues(new Uint8Array(1))[0] &
+					(15 >> (+c / 4)))
+			).toString(16)
+		);
+	}
+
 	static async LogInAsGuest(): Promise<User> {
 		// return Parse.AnonymousUtils.logIn() as any;
+		const id = this.uuidv4();
 		const authData = {
 			authData: {
-				id: crypto.randomUUID(),
+				id,
 			},
 		};
 

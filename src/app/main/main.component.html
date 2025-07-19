@@ -1,6 +1,25 @@
 <ion-header>
 	<ion-toolbar>
 		<ion-title>Krokodili</ion-title>
+		<ion-buttons slot="end">
+			<ion-button color="dark" (click)="doRegisterNotifications()">
+				<ion-icon
+					slot="icon-only"
+					[ios]="paletteToggle ? 'moon-outline' : 'sunny-outline'"
+					[md]="paletteToggle ? 'moon-outline' : 'sunny-outline'"
+				></ion-icon>
+			</ion-button>
+			<ion-button color="dark" (click)="toggleChange()">
+				<ion-icon
+					slot="icon-only"
+					[ios]="paletteToggle ? 'moon-outline' : 'sunny-outline'"
+					[md]="paletteToggle ? 'moon-outline' : 'sunny-outline'"
+				></ion-icon>
+			</ion-button>
+			<ion-button color="dark" (click)="logOut()">
+				<ion-icon name="log-out-outline"></ion-icon>
+			</ion-button>
+		</ion-buttons>
 	</ion-toolbar>
 </ion-header>
 
