@@ -5,7 +5,16 @@ import { IonButton, IonGrid, IonRow, IonCol } from '@ionic/angular/standalone';
 	selector: 'app-log-in',
 	templateUrl: './log-in.component.html',
 	styleUrls: ['./log-in.component.scss'],
+	imports: [IonGrid, IonRow, IonCol, IonButton],
 })
 export class LogInComponent {
 	constructor() {}
+
+	logInWithGoogle() {
+		console.log('logInWithGoogle');
+	}
+
+	back() {
+		console.log('back');
+	}
 }
