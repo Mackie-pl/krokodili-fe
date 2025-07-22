@@ -26,6 +26,7 @@ import {
 	addListeners,
 	registerNotifications,
 } from '@app/services/push-notifications.service';
+import { NavbarComponent } from '@app/shared/navbar/navbar.component';
 
 @Component({
 	selector: 'welcome',
@@ -44,6 +45,7 @@ import {
 		LevelSelectionComponent,
 		TopicSelectionComponent,
 		LoginSectionComponent,
+		NavbarComponent,
 	],
 	standalone: true,
 })

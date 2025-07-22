@@ -2,6 +2,7 @@ import Parse from 'parse';
 import { Subscription } from './subscription.model';
 import { globalErrorHandler } from '../shared/global-error-handler';
 import { Device } from '@capacitor/device';
+import { signal } from '@angular/core';
 
 enum Column {
 	LAST_VISIT_DATE = 'lastVisitDate',
@@ -12,6 +13,7 @@ enum Column {
 }
 
 export class User extends Parse.User {
+	static isAuthenticated = signal(false);
 	static async bumpVisitDate() {
 		const user = Parse.User.current();
 		if (!user) return;
@@ -25,6 +27,15 @@ export class User extends Parse.User {
 	static googleOauthPromise: Promise<User>;
 	constructor() {
 		super();
+	}
+
+	override initialize(): void {
+		console.log('User.initialize()');
+		super.initialize();
+		setTimeout(() => {
+			console.log('User.initialize() setTimeout', Parse.User.current());
+			User.isAuthenticated.set(Parse.User.current() !== null);
+		});
 	}
 
 	get name() {
@@ -67,6 +78,11 @@ export class User extends Parse.User {
 		return subsByUser;
 	}
 
+	static override async logOut() {
+		await Parse.User.logOut();
+		User.isAuthenticated.set(false);
+	}
+
 	static uuidv4() {
 		return '10000000-1000-4000-8000-100000000000'.replace(/[018]/g, (c) =>
 			(
@@ -89,7 +105,7 @@ export class User extends Parse.User {
 		const user = new User();
 
 		const anonUser = (await user.linkWith('anonymous', authData)) as any;
-		console.log(anonUser);
+		User.isAuthenticated.set(true);
 		return anonUser;
 	}
 
@@ -122,11 +138,14 @@ export class User extends Parse.User {
 			}
 
 			return new Promise<User>((resolve, reject) => {
+				let isCompleted = false;
+
 				// Listen for messages from the popup
 				const messageHandler = (event: MessageEvent) => {
 					console.log('Received message:', event);
 					if (event.origin !== window.location.origin) return;
 
+					isCompleted = true;
 					switch (event.data.type) {
 						case 'GOOGLE_OAUTH_CODE':
 							window.removeEventListener(
@@ -159,10 +178,24 @@ export class User extends Parse.User {
 
 				// Check if the popup was closed manually
 				const popupCheckInterval = setInterval(() => {
-					if (popup.closed) {
-						clearInterval(popupCheckInterval);
-						window.removeEventListener('message', messageHandler);
-						reject(new Error('Authentication window was closed'));
+					try {
+						if (popup.closed && !isCompleted) {
+							isCompleted = true;
+							clearInterval(popupCheckInterval);
+							window.removeEventListener(
+								'message',
+								messageHandler
+							);
+							reject(
+								new Error('Authentication window was closed')
+							);
+						}
+					} catch (error) {
+						// Cross-Origin-Opener-Policy prevents access to popup.closed
+						// This is expected behavior when the popup navigates to a different origin
+						console.log(
+							'Cannot check popup.closed due to COOP policy'
+						);
 					}
 				}, 500);
 
@@ -199,6 +232,7 @@ export class User extends Parse.User {
 				redirectUri:
 					window.location.origin + '/callback/google-oauth.html',
 			});
+			console.log('Auth details:', authDetails, authDetails.id);
 			const authData = {
 				id: authDetails.id,
 				access_token: authDetails.access_token,
@@ -213,6 +247,7 @@ export class User extends Parse.User {
 				user.set('email', authDetails.email);
 				await user.save();
 			}
+			User.isAuthenticated.set(true);
 			return user;
 		} catch (error) {
 			console.error('Failed to exchange code for token:', error);

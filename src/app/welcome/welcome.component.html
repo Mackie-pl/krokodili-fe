@@ -1,20 +1,4 @@
-<ion-header class="ion-no-border">
-	<ion-toolbar>
-		<ion-buttons slot="end">
-			<!-- <ion-button color="dark" (click)="doRegisterNotifications()">
-				Register notifications
-			</ion-button> -->
-			<ion-button color="dark" (click)="toggleChange()">
-				<ion-icon
-					slot="icon-only"
-					[ios]="paletteToggle ? 'moon-outline' : 'sunny-outline'"
-					[md]="paletteToggle ? 'moon-outline' : 'sunny-outline'"
-				></ion-icon>
-			</ion-button>
-		</ion-buttons>
-	</ion-toolbar>
-</ion-header>
-
+<app-navbar [isWelcome]="true"></app-navbar>
 <ion-content class="welcome-content">
 	<div class="welcome-container">
 		<div class="logo-container">

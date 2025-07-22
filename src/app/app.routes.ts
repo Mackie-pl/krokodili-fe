@@ -24,6 +24,12 @@ export const routes: Routes = [
 		canActivate: [NormalScreenGuard],
 	},
 	{
+		path: 'login',
+		loadComponent: () =>
+			import('./log-in/log-in.component').then((m) => m.LogInComponent),
+		canActivate: [WelcomeScreenGuard],
+	},
+	{
 		path: '',
 		redirectTo: 'welcome',
 		pathMatch: 'full',

@@ -2,18 +2,18 @@
 	"workbench.colorCustomizations": {
 		"activityBar.activeBorder": "#b4ffff",
 		"activityBar.border": "#E7E6E3",
-		"activityBar.background": "#B68D40",
-		"activityBar.foreground": "#122620",
-		"activityBar.inactiveForeground": "#1c1c1c",
-		"activityBar.activeBackground": "#D6AD60",
-		"titleBar.activeBackground": "#B68D40",
-		"titleBar.activeForeground": "#122620",
-		"titleBar.inactiveBackground": "#97845f",
-		"titleBar.inactiveForeground": "#1c1c1c",
-		"titleBar.border": "#D6AD60",
-		"statusBar.background": "#B68D40",
-		"statusBar.foreground": "#122620",
-		"statusBar.border": "#D6AD60"
+		"activityBar.background": "#221530",
+		"activityBar.foreground": "#F9E830",
+		"activityBar.inactiveForeground": "#b9b370",
+		"activityBar.activeBackground": "#F52870",
+		"titleBar.activeBackground": "#221530",
+		"titleBar.activeForeground": "#F9E830",
+		"titleBar.inactiveBackground": "#221e27",
+		"titleBar.inactiveForeground": "#b9b370",
+		"titleBar.border": "#F52870",
+		"statusBar.background": "#221530",
+		"statusBar.foreground": "#F9E830",
+		"statusBar.border": "#F52870"
 	},
 	"cSpell.words": ["krokodili"]
 }

@@ -14,6 +14,19 @@ export function markedOptionsFactory(): MarkedOptions {
 		// Split text into words and non-words (punctuation, spaces, etc.)
 		// Using Unicode property escapes to match any letter from any language
 
+		//if whole str is found in vocabulary, return it as is
+		const entryFound = window.krokodiliVocabulary.find(
+			(entry) => entry.wordOrPhrase === str
+		);
+		if (entryFound) {
+			if (!entryFound.isTranslatable) {
+				return str;
+			}
+			return `<span class="word ${
+				entryFound?.isChallenging ? 'challenging' : ''
+			}">${str}</span>`;
+		}
+
 		// first try to join words that are translated together with some character
 		window.krokodiliVocabulary.forEach((word) => {
 			str = str.replaceAll(
@@ -25,6 +38,7 @@ export function markedOptionsFactory(): MarkedOptions {
 		const tokens =
 			str.match(/[\p{L}|___]+|\p{N}+|[^\p{L}\p{N}\s]|\s+/gu) || [];
 
+		console.log(str, tokens);
 		const out = tokens
 			.map((token: string, i, arr) => {
 				// console.log(token, token.includes('\n'));
@@ -61,7 +75,7 @@ export function markedOptionsFactory(): MarkedOptions {
 				return token;
 			})
 			.join('');
-		// console.log(out);
+		console.log(out);
 		return out;
 	};
 

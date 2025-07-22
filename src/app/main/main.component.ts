@@ -17,6 +17,7 @@ import { DigestsListComponent } from './digests-list/digests-list.component';
 import { User } from '../models/user.model';
 import { Router } from '@angular/router';
 import { registerNotifications } from '../services/push-notifications.service';
+import { NavbarComponent } from '@app/shared/navbar/navbar.component';
 
 @Component({
 	imports: [
@@ -30,6 +31,7 @@ import { registerNotifications } from '../services/push-notifications.service';
 		IonToolbar,
 		IonHeader,
 		DigestsListComponent,
+		NavbarComponent,
 	],
 	selector: 'main',
 	templateUrl: 'main.component.html',

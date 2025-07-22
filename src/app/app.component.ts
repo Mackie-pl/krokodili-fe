@@ -10,7 +10,13 @@ import {
 	IonApp,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { moonOutline, sunnyOutline, logOutOutline } from 'ionicons/icons';
+import {
+	moonOutline,
+	sunnyOutline,
+	logOutOutline,
+	notificationsOutline,
+} from 'ionicons/icons';
+import { NavbarComponent } from './shared/navbar/navbar.component';
 
 @Component({
 	selector: 'app-root',
@@ -23,6 +29,7 @@ import { moonOutline, sunnyOutline, logOutOutline } from 'ionicons/icons';
 		IonTitle,
 		IonHeader,
 		RouterOutlet,
+		NavbarComponent,
 	],
 	templateUrl: './app.component.html',
 	styleUrl: './app.component.scss',
@@ -31,7 +38,12 @@ export class AppComponent implements OnInit {
 	title = 'krokodili-fe';
 
 	constructor(private router: Router) {
-		addIcons({ sunnyOutline, moonOutline, logOutOutline });
+		addIcons({
+			sunnyOutline,
+			moonOutline,
+			logOutOutline,
+			notificationsOutline,
+		});
 	}
 
 	async ngOnInit(): Promise<any> {}

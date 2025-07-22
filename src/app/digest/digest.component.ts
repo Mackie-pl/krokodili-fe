@@ -12,6 +12,7 @@ import {
 import { ActionSheetComponent } from '../shared/action-sheet/action-sheet.component';
 import { ThemeableComponent } from '../themeable.component';
 import { StorageService } from '../storage.service';
+import { NavbarComponent } from '@app/shared/navbar/navbar.component';
 
 @Component({
 	selector: 'digest',
@@ -24,6 +25,7 @@ import { StorageService } from '../storage.service';
 		IonHeader,
 		MarkdownComponent,
 		ActionSheetComponent,
+		NavbarComponent,
 	],
 	styleUrls: ['digest.component.scss'],
 	host: {

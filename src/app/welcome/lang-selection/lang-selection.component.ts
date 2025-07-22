@@ -1,4 +1,4 @@
-import { Component, OnInit, output, input } from '@angular/core';
+import { Component, OnInit, output, input, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Language } from '@app/models/language.model';
 import { ThemeableComponent } from '@app/themeable.component';
@@ -6,6 +6,7 @@ import { StorageService } from '@app/storage.service';
 import { SanitizeHtmlPipe } from '@app/shared/pipes/sanitize-html.pipe';
 import { IonRow, IonCol, IonGrid, IonButton } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
+import { User } from '@app/models/user.model';
 
 @Component({
 	selector: 'app-lang-selection',
@@ -28,6 +29,9 @@ export class LangSelectionComponent
 	languages = input<Language[] | null>();
 	loading = true;
 	selectedLanguage: Language | null = null;
+	isAuthenticated = computed(() => {
+		return User.isAuthenticated();
+	});
 
 	constructor(storageService: StorageService, private router: Router) {
 		super(storageService);

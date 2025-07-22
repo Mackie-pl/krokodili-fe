@@ -1,0 +1,24 @@
+<ion-header>
+	<ion-toolbar>
+		<ion-title></ion-title>
+		<ion-buttons slot="end">
+			@if (isAuthenticated() && !isWelcome()) {
+			<ion-button color="dark" (click)="doRegisterNotifications()">
+				<ion-icon name="notifications-outline"></ion-icon>
+			</ion-button>
+			}
+			<ion-button color="dark" (click)="toggleChange()">
+				<ion-icon
+					slot="icon-only"
+					[ios]="paletteToggle ? 'moon-outline' : 'sunny-outline'"
+					[md]="paletteToggle ? 'moon-outline' : 'sunny-outline'"
+				></ion-icon>
+			</ion-button>
+			@if (isAuthenticated()) {
+			<ion-button color="dark" (click)="logOut()">
+				<ion-icon name="log-out-outline"></ion-icon>
+			</ion-button>
+			}
+		</ion-buttons>
+	</ion-toolbar>
+</ion-header>
