@@ -5,7 +5,8 @@
     "ng": "ng",
     "start": "ng serve",
     "start-for-android": "ng serve --host 0.0.0.0 --port 4200 --disable-host-check",
-    "build": "ng build && node postbuild.js && npm run build-landing-page",
+    "build": "ng build",
+	"build-for-web": "ng build && node postbuild.js && npm run build-landing-page",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "build-landing-page": "npx parcel build landing-page/index.pug --dist-dir dist/krokodili-fe/browser"
